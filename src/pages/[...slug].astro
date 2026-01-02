@@ -1,9 +1,11 @@
 ---
+// src/pages/[...slug].astro
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 import { sectionLabelFromRoute, titleizeSegment } from "../lib/sections";
 
-type DocEntry = Awaited<ReturnType<typeof getCollection>>[number];
+type DocsCollection = Awaited<ReturnType<typeof getCollection<"docs">>>;
+type DocEntry = DocsCollection[number];
 
 function normalizePath(p: string): string {
   if (!p) return "/";
@@ -63,12 +65,11 @@ function routePathFromSlugParam(slugParam: unknown): string {
 /**
  * Static routing:
  * We pre-render every content entry by its canonical `route` (preferred) or fallback slug.
- * This keeps the architecture deterministic and Netlify-compatible (no SSR adapter needed).
+ * Deterministic + Netlify-compatible (no SSR adapter needed).
  */
 export async function getStaticPaths() {
   const docs = await getCollection("docs");
 
-  // Build a stable list of unique routes -> entry
   const seen = new Set<string>();
   const paths: Array<{ params: { slug?: string[] }; props: { routePath: string } }> = [];
 
@@ -91,7 +92,7 @@ export async function getStaticPaths() {
 
 // Load docs for rendering + navigation
 const docs = await getCollection("docs");
-const byRoute = new Map(docs.map((d) => [safeRouteFor(d), d]));
+const byRoute = new Map<string, DocEntry>(docs.map((d) => [safeRouteFor(d), d]));
 
 // Determine current route from static props (preferred) or params (fallback)
 const routePath =
@@ -108,9 +109,10 @@ const title = notFound
   ? (sectionLabelFromRoute(routePath) ?? "Not Found")
   : (entry!.data.title ?? titleizeSegment(entry!.slug));
 
-// Only compute these when we have an entry
-let Content: any = null;
+// Defaults (only populated when entry exists)
+let Content: null | ((props: Record<string, any>) => any) = null;
 let headings: any[] = [];
+
 let ordered: DocEntry[] = [];
 let prevEntry: DocEntry | null = null;
 let nextEntry: DocEntry | null = null;
@@ -122,11 +124,12 @@ let sectionHref: string | null = null;
 
 let toc: Array<{ depth: number; text: string; slug: string }> = [];
 let hasToc = false;
+
 let permalink = normalizePath(routePath);
 
 if (!notFound) {
   const rendered = await entry!.render();
-  Content = rendered.Content;
+  Content = rendered.Content as any;
   headings = rendered.headings ?? [];
 
   // For next/prev: sort docs by route then title for stable order
@@ -195,10 +198,12 @@ if (!notFound) {
               <a class="crumbLink" href="/">Home</a>
 
               {sectionHref ? (
-                <>
+                <span class="crumbGroup">
                   <span class="crumbSep" aria-hidden="true">/</span>
-                  <a class="crumbLink" href={sectionHref}>{sectionLabel ?? titleizeSegment(sectionSlug!)}</a>
-                </>
+                  <a class="crumbLink" href={sectionHref}>
+                    {sectionLabel ?? titleizeSegment(sectionSlug!)}
+                  </a>
+                </span>
               ) : null}
 
               <span class="crumbSep" aria-hidden="true">/</span>
@@ -216,7 +221,7 @@ if (!notFound) {
           </header>
 
           <article class="prose docProse">
-            <Content />
+            {Content ? <Content /> : null}
           </article>
 
           {(prevEntry || nextEntry) ? (
@@ -309,6 +314,12 @@ if (!notFound) {
       font-size: 12px;
       color: var(--text-subtle);
       margin-bottom: 10px;
+    }
+
+    .crumbGroup{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
     }
 
     .crumbLink{

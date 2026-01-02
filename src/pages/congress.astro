@@ -1,5 +1,20 @@
 ---
+// src/pages/congress.astro
 import SiteLayout from "../layouts/SiteLayout.astro";
+
+function normalizePath(p: string): string {
+  if (!p) return "/";
+  let s = p.startsWith("/") ? p : "/" + p;
+  s = s.replace(/\/{2,}/g, "/");
+  if (s.length > 1 && s.endsWith("/")) s = s.slice(0, -1);
+  return s;
+}
+
+const hrefProblem = normalizePath("/the-problem");
+const hrefBackbone = normalizePath("/the-backbone");
+const hrefProposal = normalizePath("/proposal");
+const hrefStart = normalizePath("/start-here");
+const hrefLibrary = normalizePath("/library");
 ---
 
 <SiteLayout title="For Congress — Stand Up Arkansas">
@@ -19,9 +34,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </p>
 
           <div class="ctas" aria-label="Primary actions">
-            <a class="btn primary" href="/the-problem">Start with The Problem</a>
-            <a class="btn" href="/the-backbone">Then The Backbone</a>
-            <a class="btn ghost" href="/proposal">Open Proposal</a>
+            <a class="btn primary" href={hrefProblem}>Start with The Problem</a>
+            <a class="btn" href={hrefBackbone}>Then The Backbone</a>
+            <a class="btn ghost" href={hrefProposal}>Open Proposal</a>
           </div>
 
           <div class="meta" aria-label="Design signals">
@@ -46,15 +61,15 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             <h2 class="panelTitle">How to review</h2>
 
             <div class="panelGrid" role="list" aria-label="Core map">
-              <a class="mini" href="/the-problem" role="listitem">
+              <a class="mini" href={hrefProblem} role="listitem">
                 <span class="miniTop">WHY</span>
                 <span class="miniMain">The Problem</span>
               </a>
-              <a class="mini" href="/the-backbone" role="listitem">
+              <a class="mini" href={hrefBackbone} role="listitem">
                 <span class="miniTop">HOW</span>
                 <span class="miniMain">The Backbone</span>
               </a>
-              <a class="mini" href="/proposal" role="listitem">
+              <a class="mini" href={hrefProposal} role="listitem">
                 <span class="miniTop">WHAT</span>
                 <span class="miniMain">The Proposal</span>
               </a>
@@ -80,7 +95,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
                 <span class="dot draft" aria-hidden="true"></span>
                 Congress landing shell
               </span>
-              <a class="btn" href="/proposal">Sections →</a>
+              <a class="btn" href={hrefProposal}>Sections →</a>
             </div>
           </div>
         </aside>
@@ -99,7 +114,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
       </div>
 
       <div class="grid">
-        <a class="cardlink" href="/start-here">
+        <a class="cardlink" href={hrefStart}>
           <div class="cardTop">
             <p class="cardEyebrow">Orientation</p>
             <h3 class="cardTitle">Start Here</h3>
@@ -108,7 +123,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="cardFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="cardlink" href="/the-problem">
+        <a class="cardlink" href={hrefProblem}>
           <div class="cardTop">
             <p class="cardEyebrow">Context</p>
             <h3 class="cardTitle">The Problem</h3>
@@ -117,7 +132,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="cardFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="cardlink" href="/the-backbone">
+        <a class="cardlink" href={hrefBackbone}>
           <div class="cardTop">
             <p class="cardEyebrow">Mechanism</p>
             <h3 class="cardTitle">The Backbone</h3>
@@ -126,7 +141,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="cardFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="cardlink" href="/proposal">
+        <a class="cardlink" href={hrefProposal}>
           <div class="cardTop">
             <p class="cardEyebrow">Deliverable</p>
             <h3 class="cardTitle">The Proposal</h3>
@@ -135,7 +150,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="cardFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="cardlink" href="/library">
+        <a class="cardlink" href={hrefLibrary}>
           <div class="cardTop">
             <p class="cardEyebrow">Index</p>
             <h3 class="cardTitle">Library</h3>
@@ -151,8 +166,8 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             We’ll populate this page with the Congress-facing framing section, key definitions, and references once the DOCX sources are ingested.
           </p>
           <div class="noteCtas">
-            <a class="btn primary" href="/start-here">Overview</a>
-            <a class="btn" href="/proposal">Proposal</a>
+            <a class="btn primary" href={hrefStart}>Overview</a>
+            <a class="btn" href={hrefProposal}>Proposal</a>
           </div>
         </div>
       </div>
@@ -168,8 +183,8 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </p>
         </div>
         <div class="finalCta">
-          <a class="btn primary" href="/start-here">Start Here</a>
-          <a class="btn" href="/proposal">Open Proposal</a>
+          <a class="btn primary" href={hrefStart}>Start Here</a>
+          <a class="btn" href={hrefProposal}>Open Proposal</a>
         </div>
       </div>
     </section>

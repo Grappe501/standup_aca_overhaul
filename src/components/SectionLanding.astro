@@ -1,28 +1,35 @@
 ---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getEntryBySlug } from "astro:content";
+import { SECTION_LABELS, titleizeSegment } from "../lib/sections";
+
 export interface Props {
   slug: string;
   // Optional override if you want a custom page title beyond map/titleize
   titleOverride?: string;
 }
 
-import SiteLayout from "../layouts/SiteLayout.astro";
-import { getEntryBySlug } from "astro:content";
-import { SECTION_LABELS, titleizeSegment } from "../lib/sections";
+const { slug, titleOverride } = Astro.props as Props;
 
-const { slug, titleOverride } = Astro.props;
-
+// Default title logic (safe even if content lookup fails)
 let title = titleOverride ?? SECTION_LABELS[slug] ?? titleizeSegment(slug);
 
-const entry = await getEntryBySlug("docs", slug);
-
+// Content lookup must be build-safe (avoid throwing if collection/slug is missing)
 let Content: any = null;
 
-if (entry) {
-  const rendered = await entry.render();
-  Content = rendered.Content;
-  title = entry.data.title ?? title;
+try {
+  const entry = await getEntryBySlug("docs", slug);
+  if (entry) {
+    const rendered = await entry.render();
+    Content = rendered.Content;
+    title = entry.data.title ?? title;
+  }
+} catch {
+  // Swallow content lookup errors so section shells still prerender safely.
+  Content = null;
 }
 
+// Section identity
 const isProblem = slug === "the-problem";
 const isBackbone = slug === "the-backbone";
 const isProposal = slug === "proposal";
