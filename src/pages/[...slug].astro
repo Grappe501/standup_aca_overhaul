@@ -101,14 +101,84 @@ const routePath =
 
 const entry = byRoute.get(routePath);
 
-if (!entry) {
-  // Static-safe fallback: render a small page with a link to Library
-  // (we cannot Astro.redirect reliably in static build for arbitrary unknown paths)
-  const sectionLabel = sectionLabelFromRoute(routePath);
-  const title = sectionLabel ? `${sectionLabel}` : "Not Found";
-  ---
-  <SiteLayout title={`${title} — Stand Up Arkansas`} noIndex={true}>
-    <main class="doc">
+// Static-safe "not found" handling (no redirect in static build)
+const notFound = !entry;
+
+const title = notFound
+  ? (sectionLabelFromRoute(routePath) ?? "Not Found")
+  : (entry!.data.title ?? titleizeSegment(entry!.slug));
+
+// Only compute these when we have an entry
+let Content: any = null;
+let headings: any[] = [];
+let ordered: DocEntry[] = [];
+let prevEntry: DocEntry | null = null;
+let nextEntry: DocEntry | null = null;
+
+let segments: string[] = [];
+let sectionLabel: string | null = null;
+let sectionSlug: string | null = null;
+let sectionHref: string | null = null;
+
+let toc: Array<{ depth: number; text: string; slug: string }> = [];
+let hasToc = false;
+let permalink = normalizePath(routePath);
+
+if (!notFound) {
+  const rendered = await entry!.render();
+  Content = rendered.Content;
+  headings = rendered.headings ?? [];
+
+  // For next/prev: sort docs by route then title for stable order
+  ordered = docs
+    .slice()
+    .sort((a, b) => {
+      const ra = safeRouteFor(a);
+      const rb = safeRouteFor(b);
+      const rcmp = ra.localeCompare(rb);
+      if (rcmp !== 0) return rcmp;
+      return (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug);
+    });
+
+  const currentIndex = ordered.findIndex((d) => d.id === entry!.id);
+  prevEntry = currentIndex > 0 ? ordered[currentIndex - 1] : null;
+  nextEntry =
+    currentIndex >= 0 && currentIndex < ordered.length - 1
+      ? ordered[currentIndex + 1]
+      : null;
+
+  // Breadcrumbs / section link
+  segments = routePath.split("/").filter(Boolean);
+  sectionLabel = sectionLabelFromRoute(routePath);
+
+  // Only link to a section if we actually have a first segment (avoid linking "/" as "Docs")
+  sectionSlug = segments.length > 0 ? segments[0] : null;
+  sectionHref = sectionSlug ? normalizePath("/" + sectionSlug) : null;
+
+  // TOC: keep h2/h3
+  toc =
+    Array.isArray(headings)
+      ? headings
+          .filter((h: any) => h.depth === 2 || h.depth === 3)
+          .map((h: any) => {
+            const text = stripHtml(h.text ?? "");
+            return {
+              depth: h.depth,
+              text,
+              slug: h.slug ?? slugToAnchor(text),
+            };
+          })
+          .filter((h: any) => h.text)
+      : [];
+
+  hasToc = toc.length > 0;
+  permalink = safeRouteFor(entry!);
+}
+---
+
+<SiteLayout title={`${title} — Stand Up Arkansas`} noIndex={notFound}>
+  <main class="doc">
+    {notFound ? (
       <div class="card" style="padding: 16px;">
         <h1 style="margin:0 0 8px;">Page not found</h1>
         <p style="margin:0 0 14px; color: var(--text-muted);">
@@ -116,148 +186,92 @@ if (!entry) {
         </p>
         <a class="btn primary" href="/library">Go to Library</a>
       </div>
-    </main>
-  </SiteLayout>
-  ---
-  return;
-}
+    ) : (
+      <div class="docGrid">
+        <!-- LEFT: Main content -->
+        <div class="docMain">
+          <header class="docHeader card" aria-label="Document header">
+            <div class="crumbs" aria-label="Breadcrumbs">
+              <a class="crumbLink" href="/">Home</a>
 
-// Render content
-const { Content, headings } = await entry.render();
-const title = entry.data.title ?? titleizeSegment(entry.slug);
+              {sectionHref ? (
+                <>
+                  <span class="crumbSep" aria-hidden="true">/</span>
+                  <a class="crumbLink" href={sectionHref}>{sectionLabel ?? titleizeSegment(sectionSlug!)}</a>
+                </>
+              ) : null}
 
-// For next/prev: sort docs by route then title for stable order
-const ordered = docs
-  .slice()
-  .sort((a, b) => {
-    const ra = safeRouteFor(a);
-    const rb = safeRouteFor(b);
-    const rcmp = ra.localeCompare(rb);
-    if (rcmp !== 0) return rcmp;
-    return (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug);
-  });
-
-const currentIndex = ordered.findIndex((d) => d.id === entry.id);
-const prevEntry = currentIndex > 0 ? ordered[currentIndex - 1] : null;
-const nextEntry =
-  currentIndex >= 0 && currentIndex < ordered.length - 1
-    ? ordered[currentIndex + 1]
-    : null;
-
-// Breadcrumbs / section link
-const segments = routePath.split("/").filter(Boolean);
-const sectionLabel = sectionLabelFromRoute(routePath);
-
-// Only link to a section if we actually have a first segment (avoid linking "/" as "Docs")
-const sectionSlug = segments.length > 0 ? segments[0] : null;
-const sectionHref = sectionSlug ? normalizePath("/" + sectionSlug) : null;
-
-// TOC: keep h2/h3
-const toc =
-  Array.isArray(headings)
-    ? headings
-        .filter((h: any) => h.depth === 2 || h.depth === 3)
-        .map((h: any) => {
-          const text = stripHtml(h.text ?? "");
-          return {
-            depth: h.depth,
-            text,
-            slug: h.slug ?? slugToAnchor(text),
-          };
-        })
-        .filter((h: any) => h.text)
-    : [];
-
-const hasToc = toc.length > 0;
-const permalink = safeRouteFor(entry);
----
-
-<SiteLayout title={`${title} — Stand Up Arkansas`}>
-  <main class="doc">
-    <div class="docGrid">
-      <!-- LEFT: Main content -->
-      <div class="docMain">
-        <header class="docHeader card" aria-label="Document header">
-          <div class="crumbs" aria-label="Breadcrumbs">
-            <a class="crumbLink" href="/">Home</a>
-
-            {sectionHref ? (
-              <>
-                <span class="crumbSep" aria-hidden="true">/</span>
-                <a class="crumbLink" href={sectionHref}>{sectionLabel ?? titleizeSegment(sectionSlug!)}</a>
-              </>
-            ) : null}
-
-            <span class="crumbSep" aria-hidden="true">/</span>
-            <span class="crumbCurrent">{title}</span>
-          </div>
-
-          <div class="docHeaderRow">
-            <h1 class="docTitle">{title}</h1>
-
-            <div class="docActions" aria-label="Document actions">
-              <a class="btn" href="/library">Library</a>
-              <a class="btn primary" href={permalink}>Permalink</a>
+              <span class="crumbSep" aria-hidden="true">/</span>
+              <span class="crumbCurrent">{title}</span>
             </div>
-          </div>
-        </header>
 
-        <article class="prose docProse">
-          <Content />
-        </article>
+            <div class="docHeaderRow">
+              <h1 class="docTitle">{title}</h1>
 
-        {(prevEntry || nextEntry) ? (
-          <nav class="docPager" aria-label="Previous and next">
-            {prevEntry ? (
-              <a class="btn" href={safeRouteFor(prevEntry)}>
-                ← Prev: {prevEntry.data.title ?? titleizeSegment(prevEntry.slug)}
-              </a>
-            ) : (
-              <span class="pagerSpacer" aria-hidden="true"></span>
-            )}
-
-            {nextEntry ? (
-              <a class="btn primary" href={safeRouteFor(nextEntry)}>
-                Next: {nextEntry.data.title ?? titleizeSegment(nextEntry.slug)} →
-              </a>
-            ) : null}
-          </nav>
-        ) : null}
-      </div>
-
-      <!-- RIGHT: TOC / section -->
-      <aside class="docRail" aria-label="On this page">
-        <div class="railCard card">
-          <div class="railHead">
-            <div class="railTitle">On this page</div>
-            <div class="railHint">{hasToc ? "Jump to a section" : "No headings detected"}</div>
-          </div>
-
-          {hasToc ? (
-            <ul class="toc" aria-label="Table of contents">
-              {toc.map((h) => (
-                <li class={`tocItem ${h.depth === 3 ? "isH3" : "isH2"}`}>
-                  <a class="tocLink" href={`#${h.slug}`}>{h.text}</a>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div class="tocEmpty">
-              If this is unexpected, ensure the source DOCX/MD has <code>##</code> or <code>###</code> headings.
+              <div class="docActions" aria-label="Document actions">
+                <a class="btn" href="/library">Library</a>
+                <a class="btn primary" href={permalink}>Permalink</a>
+              </div>
             </div>
-          )}
+          </header>
 
-          {sectionHref ? (
-            <div class="railFoot">
-              <div class="railMetaLabel">Section</div>
-              <a class="btn" href={sectionHref}>
-                {sectionLabel ?? titleizeSegment(sectionSlug!)} →
-              </a>
-            </div>
+          <article class="prose docProse">
+            <Content />
+          </article>
+
+          {(prevEntry || nextEntry) ? (
+            <nav class="docPager" aria-label="Previous and next">
+              {prevEntry ? (
+                <a class="btn" href={safeRouteFor(prevEntry)}>
+                  ← Prev: {prevEntry.data.title ?? titleizeSegment(prevEntry.slug)}
+                </a>
+              ) : (
+                <span class="pagerSpacer" aria-hidden="true"></span>
+              )}
+
+              {nextEntry ? (
+                <a class="btn primary" href={safeRouteFor(nextEntry)}>
+                  Next: {nextEntry.data.title ?? titleizeSegment(nextEntry.slug)} →
+                </a>
+              ) : null}
+            </nav>
           ) : null}
         </div>
-      </aside>
-    </div>
+
+        <!-- RIGHT: TOC / section -->
+        <aside class="docRail" aria-label="On this page">
+          <div class="railCard card">
+            <div class="railHead">
+              <div class="railTitle">On this page</div>
+              <div class="railHint">{hasToc ? "Jump to a section" : "No headings detected"}</div>
+            </div>
+
+            {hasToc ? (
+              <ul class="toc" aria-label="Table of contents">
+                {toc.map((h) => (
+                  <li class={`tocItem ${h.depth === 3 ? "isH3" : "isH2"}`}>
+                    <a class="tocLink" href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div class="tocEmpty">
+                If this is unexpected, ensure the source DOCX/MD has <code>##</code> or <code>###</code> headings.
+              </div>
+            )}
+
+            {sectionHref ? (
+              <div class="railFoot">
+                <div class="railMetaLabel">Section</div>
+                <a class="btn" href={sectionHref}>
+                  {sectionLabel ?? titleizeSegment(sectionSlug!)} →
+                </a>
+              </div>
+            ) : null}
+          </div>
+        </aside>
+      </div>
+    )}
   </main>
 
   <style>
