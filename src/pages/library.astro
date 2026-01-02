@@ -1,26 +1,47 @@
 ---
+// src/pages/library.astro
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 
-const docs = (await getCollection("docs"))
-  .slice()
-  .sort((a, b) => (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug));
+function normalizePath(p: string): string {
+  if (!p) return "/";
+  let s = p.startsWith("/") ? p : "/" + p;
 
-const count = docs.length;
+  // Collapse duplicate slashes (e.g. "//proposal//overview" -> "/proposal/overview")
+  s = s.replace(/\/{2,}/g, "/");
 
-function routeFor(d: any) {
-  return d.data?.route || "/" + d.slug;
+  // Strip trailing slash (except root)
+  if (s.length > 1 && s.endsWith("/")) s = s.slice(0, -1);
+
+  return s;
 }
 
-function labelFor(d: any) {
-  return d.data?.title ?? d.slug;
+function routeFor(d: any): string {
+  const raw = d?.data?.route || "/" + d.slug;
+  return normalizePath(raw);
 }
 
-function subtitleFor(d: any) {
+function labelFor(d: any): string {
+  return d?.data?.title ?? d.slug;
+}
+
+function subtitleFor(d: any): string {
   // Optional fields if you add them later. Safe fallbacks.
-  const s = d.data?.description || d.data?.summary || d.data?.kicker || "";
+  const s = d?.data?.description || d?.data?.summary || d?.data?.kicker || "";
   return typeof s === "string" ? s : "";
 }
+
+const docs = (await getCollection("docs"))
+  .slice()
+  .sort((a, b) => {
+    const ra = routeFor(a);
+    const rb = routeFor(b);
+    const rcmp = ra.localeCompare(rb);
+    if (rcmp !== 0) return rcmp;
+    return (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug);
+  });
+
+const count = docs.length;
 ---
 
 <SiteLayout title="Library — Stand Up Arkansas">
