@@ -3,3 +3,9 @@ dist/
 .env
 .DS_Store
 .vscode/
+
+# Build artifacts
+.astro/
+dist/
+aca_overhaul_static_*.zip
+

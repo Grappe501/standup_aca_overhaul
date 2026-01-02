@@ -39,24 +39,26 @@ function slugToAnchor(s: string): string {
 }
 
 function routePathFromSlugParam(slugParam: unknown): string {
-  // For [...slug], Astro.params.slug is typically string[] | undefined
+  // For [...slug], Astro.params.slug is typically string | undefined (not array).
   if (!slugParam) return "/";
 
+  if (typeof slugParam === "string") {
+    const s = slugParam.trim();
+    if (!s) return "/";
+    // slug may include "/" already, e.g. "congress/legislative"
+    return normalizePath("/" + s.replace(/^\/+/, ""));
+  }
+
+  // Defensive fallback
   if (Array.isArray(slugParam)) {
     const joined = slugParam.filter(Boolean).join("/");
     return normalizePath("/" + joined);
   }
 
-  if (typeof slugParam === "string") {
-    const s = slugParam.trim();
-    if (!s) return "/";
-    return normalizePath(s.startsWith("/") ? s : "/" + s);
-  }
-
   try {
     const s = String(slugParam).trim();
     if (!s) return "/";
-    return normalizePath(s.startsWith("/") ? s : "/" + s);
+    return normalizePath("/" + s.replace(/^\/+/, ""));
   } catch {
     return "/";
   }
@@ -64,25 +66,61 @@ function routePathFromSlugParam(slugParam: unknown): string {
 
 /**
  * Static routing:
- * We pre-render every content entry by its canonical `route` (preferred) or fallback slug.
- * Deterministic + Netlify-compatible (no SSR adapter needed).
+ * Pre-render every content entry by its canonical `route` (preferred) or fallback slug.
+ * Deterministic + static-host compatible.
+ *
+ * IMPORTANT: getStaticPaths must be fully self-contained (no outer helper refs),
+ * because Astro/Vite transforms can otherwise trigger "X is not defined" at build time.
  */
 export async function getStaticPaths() {
-  const docs = await getCollection("docs");
+  // Self-contained normalizer (DO NOT reference outer normalizePath here)
+  const normalize = (p: string): string => {
+    if (!p) return "/";
+    let s = p.startsWith("/") ? p : "/" + p;
+    s = s.replace(/\/{2,}/g, "/");
+    if (s.length > 1 && s.endsWith("/")) s = s.slice(0, -1);
+    return s;
+  };
+
+  // Explicit pages already exist for these; don't duplicate them via catch-all.
+  const reserved = new Set<string>([
+    "/",
+    "/index",
+    "/start-here",
+    "/congress",
+    "/library",
+    "/the-problem",
+    "/the-backbone",
+    "/proposal",
+    "/loopholes",
+    "/rural",
+  ]);
+
+  let docs: any[] = [];
+  try {
+    docs = await getCollection("docs");
+  } catch {
+    docs = [];
+  }
 
   const seen = new Set<string>();
-  const paths: Array<{ params: { slug?: string[] }; props: { routePath: string } }> = [];
+  const paths: Array<{ params: { slug?: string }; props: { routePath: string } }> = [];
 
   for (const d of docs) {
-    const routePath = safeRouteFor(d);
+    // DO NOT call outer normalizePath here
+    const routePath = normalize(d?.data?.route || "/" + d.slug);
+
+    // Skip anything that collides with explicit pages
+    if (reserved.has(routePath)) continue;
+
     if (seen.has(routePath)) continue;
     seen.add(routePath);
 
-    // Convert "/a/b/c" -> ["a","b","c"] ; "/" -> []
-    const parts = routePath === "/" ? [] : routePath.split("/").filter(Boolean);
+    // Astro expects catch-all param as a STRING like "a/b/c"
+    const slug = routePath.replace(/^\//, "");
 
     paths.push({
-      params: { slug: parts.length ? parts : undefined },
+      params: { slug: slug || undefined },
       props: { routePath },
     });
   }
@@ -90,8 +128,14 @@ export async function getStaticPaths() {
   return paths;
 }
 
-// Load docs for rendering + navigation
-const docs = await getCollection("docs");
+// Load docs for rendering + navigation (build-safe)
+let docs: DocEntry[] = [];
+try {
+  docs = (await getCollection("docs")) as unknown as DocEntry[];
+} catch {
+  docs = [];
+}
+
 const byRoute = new Map<string, DocEntry>(docs.map((d) => [safeRouteFor(d), d]));
 
 // Determine current route from static props (preferred) or params (fallback)
@@ -154,7 +198,6 @@ if (!notFound) {
   segments = routePath.split("/").filter(Boolean);
   sectionLabel = sectionLabelFromRoute(routePath);
 
-  // Only link to a section if we actually have a first segment (avoid linking "/" as "Docs")
   sectionSlug = segments.length > 0 ? segments[0] : null;
   sectionHref = sectionSlug ? normalizePath("/" + sectionSlug) : null;
 
@@ -291,15 +334,9 @@ if (!notFound) {
       align-items:start;
     }
 
-    .docMain{
-      min-width: 0;
-    }
+    .docMain{ min-width: 0; }
+    .docRail{ min-width: 0; }
 
-    .docRail{
-      min-width: 0;
-    }
-
-    /* Header */
     .docHeader{
       padding: 14px 16px;
       margin-bottom: 18px;
@@ -332,9 +369,7 @@ if (!notFound) {
       border-bottom-color: rgba(var(--fg), .22);
     }
 
-    .crumbSep{
-      opacity: .55;
-    }
+    .crumbSep{ opacity: .55; }
 
     .crumbCurrent{
       color: var(--text-muted);
@@ -364,12 +399,8 @@ if (!notFound) {
       align-items:center;
     }
 
-    /* Prose containment */
-    .docProse{
-      max-width: 920px;
-    }
+    .docProse{ max-width: 920px; }
 
-    /* Pager */
     .docPager{
       display:flex;
       gap: 12px;
@@ -378,11 +409,8 @@ if (!notFound) {
       align-items:center;
       justify-content:space-between;
     }
-    .pagerSpacer{
-      display:none;
-    }
+    .pagerSpacer{ display:none; }
 
-    /* Rail card */
     .railCard{
       padding: 14px 14px;
       border-radius: var(--r-lg);
@@ -416,9 +444,7 @@ if (!notFound) {
       gap: 8px;
     }
 
-    .tocItem{
-      margin: 0;
-    }
+    .tocItem{ margin: 0; }
 
     .tocItem.isH3{
       padding-left: 12px;
@@ -459,16 +485,9 @@ if (!notFound) {
     }
 
     @media (max-width: 980px){
-      .docGrid{
-        grid-template-columns: 1fr;
-      }
-      .railCard{
-        position: static;
-        top: auto;
-      }
-      .docPager{
-        justify-content:flex-start;
-      }
+      .docGrid{ grid-template-columns: 1fr; }
+      .railCard{ position: static; top: auto; }
+      .docPager{ justify-content:flex-start; }
     }
   </style>
 </SiteLayout>
