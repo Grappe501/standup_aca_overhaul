@@ -1,6 +1,4 @@
 ---
-export const prerender = false;
-
 import SiteLayout from "../layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
 import { sectionLabelFromRoute, titleizeSegment } from "../lib/sections";
@@ -38,23 +36,23 @@ function slugToAnchor(s: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-function routePathFromParamsSlug(slug: unknown): string {
-  // Astro.params.slug is typically string | string[] | undefined for [...slug]
-  if (!slug) return "/";
+function routePathFromSlugParam(slugParam: unknown): string {
+  // For [...slug], Astro.params.slug is typically string[] | undefined
+  if (!slugParam) return "/";
 
-  if (Array.isArray(slug)) {
-    const joined = slug.filter(Boolean).join("/");
+  if (Array.isArray(slugParam)) {
+    const joined = slugParam.filter(Boolean).join("/");
     return normalizePath("/" + joined);
   }
 
-  if (typeof slug === "string") {
-    const s = slug.trim();
+  if (typeof slugParam === "string") {
+    const s = slugParam.trim();
     if (!s) return "/";
     return normalizePath(s.startsWith("/") ? s : "/" + s);
   }
 
   try {
-    const s = String(slug).trim();
+    const s = String(slugParam).trim();
     if (!s) return "/";
     return normalizePath(s.startsWith("/") ? s : "/" + s);
   } catch {
@@ -62,16 +60,66 @@ function routePathFromParamsSlug(slug: unknown): string {
   }
 }
 
-// Load all docs and build a route index (normalized)
+/**
+ * Static routing:
+ * We pre-render every content entry by its canonical `route` (preferred) or fallback slug.
+ * This keeps the architecture deterministic and Netlify-compatible (no SSR adapter needed).
+ */
+export async function getStaticPaths() {
+  const docs = await getCollection("docs");
+
+  // Build a stable list of unique routes -> entry
+  const seen = new Set<string>();
+  const paths: Array<{ params: { slug?: string[] }; props: { routePath: string } }> = [];
+
+  for (const d of docs) {
+    const routePath = safeRouteFor(d);
+    if (seen.has(routePath)) continue;
+    seen.add(routePath);
+
+    // Convert "/a/b/c" -> ["a","b","c"] ; "/" -> []
+    const parts = routePath === "/" ? [] : routePath.split("/").filter(Boolean);
+
+    paths.push({
+      params: { slug: parts.length ? parts : undefined },
+      props: { routePath },
+    });
+  }
+
+  return paths;
+}
+
+// Load docs for rendering + navigation
 const docs = await getCollection("docs");
 const byRoute = new Map(docs.map((d) => [safeRouteFor(d), d]));
 
-// Determine current route (robust + normalized)
-const routePath = routePathFromParamsSlug(Astro.params.slug);
+// Determine current route from static props (preferred) or params (fallback)
+const routePath =
+  (Astro.props as any)?.routePath
+    ? normalizePath((Astro.props as any).routePath)
+    : routePathFromSlugParam(Astro.params.slug);
+
 const entry = byRoute.get(routePath);
 
 if (!entry) {
-  return Astro.redirect("/library");
+  // Static-safe fallback: render a small page with a link to Library
+  // (we cannot Astro.redirect reliably in static build for arbitrary unknown paths)
+  const sectionLabel = sectionLabelFromRoute(routePath);
+  const title = sectionLabel ? `${sectionLabel}` : "Not Found";
+  ---
+  <SiteLayout title={`${title} — Stand Up Arkansas`} noIndex={true}>
+    <main class="doc">
+      <div class="card" style="padding: 16px;">
+        <h1 style="margin:0 0 8px;">Page not found</h1>
+        <p style="margin:0 0 14px; color: var(--text-muted);">
+          We couldn’t find that page. Use the Library to browse the full structure.
+        </p>
+        <a class="btn primary" href="/library">Go to Library</a>
+      </div>
+    </main>
+  </SiteLayout>
+  ---
+  return;
 }
 
 // Render content
