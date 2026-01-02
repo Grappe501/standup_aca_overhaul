@@ -1,5 +1,20 @@
 ---
+// src/pages/start-here.astro
 import SiteLayout from "../layouts/SiteLayout.astro";
+
+function normalizePath(p: string): string {
+  if (!p) return "/";
+  let s = p.startsWith("/") ? p : "/" + p;
+  s = s.replace(/\/{2,}/g, "/");
+  if (s.length > 1 && s.endsWith("/")) s = s.slice(0, -1);
+  return s;
+}
+
+const hrefProblem = normalizePath("/the-problem");
+const hrefBackbone = normalizePath("/the-backbone");
+const hrefProposal = normalizePath("/proposal");
+const hrefCongress = normalizePath("/congress");
+const hrefLibrary = normalizePath("/library");
 ---
 
 <SiteLayout title="Start Here — Stand Up Arkansas">
@@ -18,9 +33,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </p>
 
           <div class="ctas" aria-label="Primary actions">
-            <a class="btn primary" href="/the-problem">Start with The Problem</a>
-            <a class="btn" href="/the-backbone">Then The Backbone</a>
-            <a class="btn ghost" href="/proposal">Open the Proposal</a>
+            <a class="btn primary" href={hrefProblem}>Start with The Problem</a>
+            <a class="btn" href={hrefBackbone}>Then The Backbone</a>
+            <a class="btn ghost" href={hrefProposal}>Open the Proposal</a>
           </div>
 
           <div class="meta" aria-label="Design signals">
@@ -44,15 +59,15 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             <h2 class="panelTitle">Quick orientation</h2>
 
             <div class="panelGrid" role="list" aria-label="Core map">
-              <a class="mini" href="/the-problem" role="listitem">
+              <a class="mini" href={hrefProblem} role="listitem">
                 <span class="miniTop">WHY</span>
                 <span class="miniMain">The Problem</span>
               </a>
-              <a class="mini" href="/the-backbone" role="listitem">
+              <a class="mini" href={hrefBackbone} role="listitem">
                 <span class="miniTop">HOW</span>
                 <span class="miniMain">The Backbone</span>
               </a>
-              <a class="mini" href="/proposal" role="listitem">
+              <a class="mini" href={hrefProposal} role="listitem">
                 <span class="miniTop">WHAT</span>
                 <span class="miniMain">The Proposal</span>
               </a>
@@ -78,7 +93,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
                 <span class="dot draft" aria-hidden="true"></span>
                 Guided overview shell
               </span>
-              <a class="btn" href="/library">Library →</a>
+              <a class="btn" href={hrefLibrary}>Library →</a>
             </div>
           </div>
         </aside>
@@ -97,7 +112,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
       </div>
 
       <div class="flowGrid">
-        <a class="stepCard" href="/the-problem">
+        <a class="stepCard" href={hrefProblem}>
           <p class="stepTop">First</p>
           <h3 class="stepMain">The Problem</h3>
           <p class="stepSub">
@@ -106,7 +121,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="stepFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="stepCard" href="/the-backbone">
+        <a class="stepCard" href={hrefBackbone}>
           <p class="stepTop">Next</p>
           <h3 class="stepMain">The Backbone</h3>
           <p class="stepSub">
@@ -115,7 +130,7 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           <div class="stepFoot"><span class="arrow">Open</span></div>
         </a>
 
-        <a class="stepCard" href="/proposal">
+        <a class="stepCard" href={hrefProposal}>
           <p class="stepTop">Then</p>
           <h3 class="stepMain">The Proposal</h3>
           <p class="stepSub">
@@ -142,9 +157,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             Follow the sequence above, then use the Library to find and share specific sections.
           </p>
           <div class="pathLinks">
-            <a class="pathLink" href="/the-problem">The Problem</a>
-            <a class="pathLink" href="/the-backbone">The Backbone</a>
-            <a class="pathLink" href="/proposal">The Proposal</a>
+            <a class="pathLink" href={hrefProblem}>The Problem</a>
+            <a class="pathLink" href={hrefBackbone}>The Backbone</a>
+            <a class="pathLink" href={hrefProposal}>The Proposal</a>
           </div>
         </div>
 
@@ -154,9 +169,9 @@ import SiteLayout from "../layouts/SiteLayout.astro";
             Use the Congress view for review structure, then move through the Proposal by section.
           </p>
           <div class="pathLinks">
-            <a class="pathLink" href="/congress">For Congress</a>
-            <a class="pathLink" href="/proposal">Proposal</a>
-            <a class="pathLink" href="/the-backbone">The Backbone</a>
+            <a class="pathLink" href={hrefCongress}>For Congress</a>
+            <a class="pathLink" href={hrefProposal}>Proposal</a>
+            <a class="pathLink" href={hrefBackbone}>The Backbone</a>
           </div>
         </div>
       </div>
@@ -173,8 +188,8 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </p>
         </div>
         <div class="shareCta">
-          <a class="btn primary" href="/proposal">Open Proposal</a>
-          <a class="btn" href="/library">Open Library</a>
+          <a class="btn primary" href={hrefProposal}>Open Proposal</a>
+          <a class="btn" href={hrefLibrary}>Open Library</a>
         </div>
       </div>
     </section>
@@ -189,8 +204,8 @@ import SiteLayout from "../layouts/SiteLayout.astro";
           </p>
         </div>
         <div class="finalCta">
-          <a class="btn primary" href="/the-problem">Open The Problem</a>
-          <a class="btn" href="/the-backbone">Open The Backbone</a>
+          <a class="btn primary" href={hrefProblem}>Open The Problem</a>
+          <a class="btn" href={hrefBackbone}>Open The Backbone</a>
         </div>
       </div>
     </section>
