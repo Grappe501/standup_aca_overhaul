@@ -1,0 +1,30 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout title="Stand Up Arkansas — ACA Overhaul" showAnnouncement={true}>
+  <div class="prose">
+    <h1>ACA for the People</h1>
+    <p>
+      A people-first, plain-language proposal to modernize the ACA with a durable Backbone that lowers costs,
+      stabilizes care, and restores trust.
+    </p>
+
+    <div class="card" style="padding: 16px 16px; margin: 18px 0;">
+      <strong>Start here:</strong> If you read one thing, read the guided overview first.
+      <div style="margin-top: 10px; display:flex; gap: 10px; flex-wrap:wrap;">
+        <a class="btn primary" href="/start-here">Start Here</a>
+        <a class="btn" href="/congress">For Congress</a>
+      </div>
+    </div>
+
+    <h2>Explore</h2>
+    <ul>
+      <li><a href="/the-problem">The Problem</a></li>
+      <li><a href="/the-backbone">The Backbone</a></li>
+      <li><a href="/proposal">The Proposal</a></li>
+      <li><a href="/congress">For Congress</a></li>
+      <li><a href="/library">Library</a></li>
+    </ul>
+  </div>
+</SiteLayout>

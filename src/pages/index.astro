@@ -1,0 +1,710 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout title="Stand Up Arkansas — ACA Overhaul" showAnnouncement={true}>
+  <main class="home">
+    <!-- HERO -->
+    <section class="hero" aria-label="Overview">
+      <div class="heroInner">
+        <div class="heroLeft">
+          <p class="eyebrow">Stand Up Arkansas • ACA Overhaul</p>
+
+          <!-- WHY (implicit): purpose + stakes -->
+          <h1 class="heroTitle">
+            Health coverage should feel stable, affordable, and trustworthy.
+          </h1>
+          <p class="heroSubtitle">
+            A people-first, plain-language redesign of the ACA—built to lower costs, stabilize care, and restore trust
+            in how coverage works.
+          </p>
+
+          <div class="heroCta" aria-label="Primary actions">
+            <a class="btn primary" href="/start-here">Start Here</a>
+            <a class="btn" href="/the-backbone">Explore the Backbone</a>
+            <a class="btn ghost" href="/proposal">Open the Proposal</a>
+          </div>
+
+          <div class="heroMeta" aria-label="Design signals">
+            <div class="metaPill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>Plain-language</span>
+            </div>
+            <div class="metaPill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>Durable by design</span>
+            </div>
+            <div class="metaPill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>Shareable sections</span>
+            </div>
+            <div class="metaPill">
+              <span class="dot draft" aria-hidden="true"></span>
+              <span>Working draft</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- HOW (implicit): mechanism / orientation card -->
+        <aside class="heroRight" aria-label="Quick guide">
+          <div class="panel">
+            <h2 class="panelTitle">Get oriented in minutes</h2>
+
+            <ol class="panelSteps">
+              <li>
+                <strong>Start with the reason</strong>
+                <span>What must improve, and why it matters.</span>
+              </li>
+              <li>
+                <strong>See the Backbone</strong>
+                <span>The durable core that makes coverage stable.</span>
+              </li>
+              <li>
+                <strong>Open the Proposal</strong>
+                <span>The full “ACA for the People” plan.</span>
+              </li>
+            </ol>
+
+            <div class="panelCta">
+              <a class="btn primary" href="/start-here">Guided Overview</a>
+              <a class="btn" href="/the-backbone">Backbone</a>
+            </div>
+
+            <div class="panelNote">
+              <strong>Built for:</strong>
+              <span>voters, advocates, policy staff, and members of Congress.</span>
+            </div>
+
+            <div class="panelFoot" aria-label="Quick links">
+              <a class="miniLink" href="/proposal">Proposal</a>
+              <a class="miniLink" href="/congress">Congress</a>
+              <a class="miniLink" href="/library">Library</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- glow accents (purely decorative) -->
+      <div class="heroGlow" aria-hidden="true"></div>
+      <div class="heroSheen" aria-hidden="true"></div>
+    </section>
+
+    <!-- STRUCTURE -->
+    <section class="map" aria-label="Explore the core structure">
+      <div class="sectionHead">
+        <h2 class="sectionTitle">A clear structure</h2>
+        <p class="sectionKicker">
+          Built to move from purpose → mechanism → plan. Each page stands alone and can be shared.
+        </p>
+      </div>
+
+      <div class="grid">
+        <!-- WHY-supporting context -->
+        <a class="cardlink" href="/the-problem">
+          <div class="cardlinkTop">
+            <p class="cardlinkEyebrow">Context</p>
+            <h3 class="cardlinkTitle">The Problem</h3>
+            <p class="cardlinkDesc">
+              A clean, non-partisan framing of what’s broken—and why it persists.
+            </p>
+          </div>
+          <ul class="cardlinkBullets" aria-label="Highlights">
+            <li>Costs & churn</li>
+            <li>Trust & complexity</li>
+            <li>Coverage instability</li>
+          </ul>
+          <div class="cardlinkFoot">
+            <span class="arrow">Explore</span>
+          </div>
+        </a>
+
+        <!-- HOW -->
+        <a class="cardlink" href="/the-backbone">
+          <div class="cardlinkTop">
+            <p class="cardlinkEyebrow">Mechanism</p>
+            <h3 class="cardlinkTitle">The Backbone</h3>
+            <p class="cardlinkDesc">
+              The durable core that makes coverage stable and costs predictable.
+            </p>
+          </div>
+          <ul class="cardlinkBullets" aria-label="Highlights">
+            <li>Stability by design</li>
+            <li>Lower admin burden</li>
+            <li>Clear incentives</li>
+          </ul>
+          <div class="cardlinkFoot">
+            <span class="arrow">Explore</span>
+          </div>
+        </a>
+
+        <!-- WHAT -->
+        <a class="cardlink" href="/proposal">
+          <div class="cardlinkTop">
+            <p class="cardlinkEyebrow">Plan</p>
+            <h3 class="cardlinkTitle">The Proposal</h3>
+            <p class="cardlinkDesc">
+              “ACA for the People” — the full plan, organized as shareable sections.
+            </p>
+          </div>
+          <ul class="cardlinkBullets" aria-label="Highlights">
+            <li>Plain-language first</li>
+            <li>Implementation-ready</li>
+            <li>Built for durability</li>
+          </ul>
+          <div class="cardlinkFoot">
+            <span class="arrow">Explore</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- SIGNAL BAND -->
+    <section class="signals" aria-label="Key aims">
+      <div class="signalsInner">
+        <div class="signal">
+          <p class="signalTop">Aim</p>
+          <p class="signalMain">Lower costs</p>
+          <p class="signalSub">Clear incentives and less friction.</p>
+        </div>
+        <div class="signal">
+          <p class="signalTop">Aim</p>
+          <p class="signalMain">Stabilize care</p>
+          <p class="signalSub">Predictable coverage by design.</p>
+        </div>
+        <div class="signal">
+          <p class="signalTop">Aim</p>
+          <p class="signalMain">Restore trust</p>
+          <p class="signalSub">Plain terms, fewer surprises.</p>
+        </div>
+        <div class="signal">
+          <p class="signalTop">Format</p>
+          <p class="signalMain">Readable</p>
+          <p class="signalSub">Minutes, not hours.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PATHWAYS -->
+    <section class="paths" aria-label="Guided pathways">
+      <div class="sectionHead">
+        <h2 class="sectionTitle">Choose your path</h2>
+        <p class="sectionKicker">A quick route depending on what you need right now.</p>
+      </div>
+
+      <div class="pathsGrid">
+        <div class="pathCard">
+          <h3 class="pathTitle">For voters & advocates</h3>
+          <p class="pathDesc">
+            Start with the overview, then follow the structure. Share individual sections as needed.
+          </p>
+          <div class="pathLinks">
+            <a class="pathLink" href="/start-here">Start Here</a>
+            <a class="pathLink" href="/the-backbone">The Backbone</a>
+            <a class="pathLink" href="/proposal">The Proposal</a>
+          </div>
+        </div>
+
+        <div class="pathCard">
+          <h3 class="pathTitle">For policy staff & Congress</h3>
+          <p class="pathDesc">
+            Use the Congress view for review structure, then jump into the full proposal sections.
+          </p>
+          <div class="pathLinks">
+            <a class="pathLink" href="/congress">For Congress</a>
+            <a class="pathLink" href="/proposal">Full Proposal</a>
+            <a class="pathLink" href="/library">Library</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final" aria-label="Final call to action">
+      <div class="finalInner">
+        <div class="finalCopy">
+          <h2 class="finalTitle">Ready to see the full plan?</h2>
+          <p class="finalDesc">Start with the guided overview, then open the Backbone and the Proposal.</p>
+        </div>
+        <div class="finalCta">
+          <a class="btn primary" href="/start-here">Start Here</a>
+          <a class="btn" href="/proposal">Open the Proposal</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .home{
+      display:flex;
+      flex-direction:column;
+      gap: 26px;
+      padding: 6px 0 22px;
+    }
+
+    /* HERO */
+    .hero{
+      position: relative;
+      overflow: hidden;
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(1200px 420px at 18% 0%, rgba(var(--brand), .22), transparent 60%),
+        radial-gradient(900px 460px at 90% 18%, rgba(var(--brand2), .12), transparent 55%),
+        var(--surface);
+      box-shadow: var(--shadow-md);
+    }
+
+    .heroGlow{
+      position:absolute;
+      inset:auto -12% -62% -12%;
+      height: 300px;
+      background:
+        radial-gradient(closest-side, rgba(var(--brand), .30), transparent 72%),
+        radial-gradient(closest-side, rgba(var(--brand2), .16), transparent 70%);
+      filter: blur(14px);
+      opacity: .85;
+      pointer-events:none;
+    }
+
+    .heroSheen{
+      position:absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg,
+          transparent 0%,
+          rgba(255,255,255,.06) 18%,
+          transparent 36%,
+          transparent 64%,
+          rgba(255,255,255,.04) 78%,
+          transparent 100%);
+      opacity: .55;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+    }
+    html[data-theme="light"] .heroSheen{
+      opacity: .38;
+      mix-blend-mode: multiply;
+    }
+
+    .heroInner{
+      position: relative;
+      display:grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: 16px;
+      align-items: start;
+      z-index: 1;
+    }
+
+    .eyebrow{
+      margin: 0 0 10px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .heroTitle{
+      margin: 0;
+      font-size: clamp(30px, 3.6vw, 50px);
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      max-width: 22ch;
+    }
+
+    .heroSubtitle{
+      margin: 12px 0 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 72ch;
+    }
+
+    .heroCta{
+      margin-top: 16px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    /* Page-local variant (works with global .btn) */
+    :global(.btn.ghost){
+      background: transparent;
+      border: 1px solid var(--stroke-strong);
+    }
+    :global(.btn.ghost:hover){
+      border-color: rgba(var(--ring), .65);
+      transform: translateY(-1px);
+      background: var(--hover-strong);
+    }
+
+    .heroMeta{
+      margin-top: 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+    }
+
+    .metaPill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .dot.neutral{
+      background: rgba(var(--fg), .68);
+      box-shadow: 0 0 0 3px rgba(var(--fg), .10);
+    }
+    .dot.draft{
+      background: rgba(var(--warn), .95);
+      box-shadow: 0 0 0 6px rgba(var(--warn), .10);
+    }
+
+    /* Panel */
+    .panel{
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(var(--bg2), .20);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panelTitle{
+      margin: 0 0 10px;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panelSteps{
+      margin: 0;
+      padding-left: 18px;
+      display:grid;
+      gap: 10px;
+      color: var(--text-muted);
+    }
+
+    .panelSteps li strong{
+      display:block;
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .panelSteps li span{
+      display:block;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    .panelCta{
+      margin-top: 14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+    }
+
+    .panelNote{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--stroke);
+      font-size: 13px;
+      color: var(--text-muted);
+      display:grid;
+      gap: 4px;
+    }
+    .panelNote strong{ color: var(--text); }
+
+    .panelFoot{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      justify-content:flex-start;
+    }
+
+    .miniLink{
+      text-decoration:none;
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(var(--bg2), .14);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+    .miniLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: rgba(var(--bg2), .26);
+    }
+
+    /* Section headers */
+    .sectionHead{
+      display:grid;
+      gap: 6px;
+      padding: 0 2px;
+    }
+
+    .sectionTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .sectionKicker{
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 84ch;
+    }
+
+    /* Map grid */
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .cardlink{
+      display:grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      text-decoration:none;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .cardlink:hover{
+      transform: translateY(-2px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .cardlinkEyebrow{
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .cardlinkTitle{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .cardlinkDesc{
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .cardlinkBullets{
+      margin: 0;
+      padding-left: 18px;
+      display:grid;
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .cardlinkFoot{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      padding-top: 2px;
+      color: var(--text);
+      font-weight: 850;
+    }
+
+    .arrow::after{
+      content: " →";
+      opacity: 0.9;
+    }
+
+    /* Signals */
+    .signals{
+      border-radius: 18px;
+      padding: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .signalsInner{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .signal{
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+    }
+
+    .signalTop{
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .signalMain{
+      margin: 8px 0 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      font-weight: 900;
+      color: var(--text);
+    }
+
+    .signalSub{
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    /* Paths */
+    .pathsGrid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .pathCard{
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      display:grid;
+      gap: 10px;
+    }
+
+    .pathTitle{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .pathDesc{
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 70ch;
+    }
+
+    .pathLinks{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .pathLink{
+      display:inline-flex;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      text-decoration:none;
+      color: var(--text);
+      font-size: 13px;
+      background: rgba(var(--bg2), .18);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .pathLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: rgba(var(--bg2), .26);
+    }
+
+    .pathLink::after{
+      content: " →";
+      opacity: 0.85;
+    }
+
+    /* Final CTA */
+    .final{
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .finalInner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+
+    .finalTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .finalDesc{
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 70ch;
+    }
+
+    .finalCta{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    @media (max-width: 960px){
+      .heroInner{ grid-template-columns: 1fr; }
+      .signalsInner{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid{ grid-template-columns: 1fr; }
+      .pathsGrid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</SiteLayout>

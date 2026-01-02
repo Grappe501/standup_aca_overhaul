@@ -1,0 +1,17 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getEntryBySlug } from "astro:content";
+
+const entry = await getEntryBySlug("docs_migrated", "start-here");
+if (!entry) {
+  throw new Error("Missing content: src/content/docs_migrated/start-here.mdx");
+}
+const { Content } = await entry.render();
+const title = entry.data.title ?? "Start Here";
+---
+
+<SiteLayout title={`${title} — Stand Up Arkansas`}>
+  <article class="prose">
+    <Content />
+  </article>
+</SiteLayout>

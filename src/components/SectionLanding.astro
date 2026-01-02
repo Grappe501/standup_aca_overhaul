@@ -1,0 +1,630 @@
+---
+export interface Props {
+  slug: string;
+  // Optional override if you want a custom page title beyond map/titleize
+  titleOverride?: string;
+}
+
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getEntryBySlug } from "astro:content";
+import { SECTION_LABELS, titleizeSegment } from "../lib/sections";
+
+const { slug, titleOverride } = Astro.props;
+
+let title = titleOverride ?? SECTION_LABELS[slug] ?? titleizeSegment(slug);
+
+const entry = await getEntryBySlug("docs", slug);
+
+let Content: any = null;
+
+if (entry) {
+  const rendered = await entry.render();
+  Content = rendered.Content;
+  title = entry.data.title ?? title;
+}
+
+const isProblem = slug === "the-problem";
+const isBackbone = slug === "the-backbone";
+const isProposal = slug === "proposal";
+
+// Primary route for this landing (matches your routing conventions)
+const primaryHref = isProblem
+  ? "/the-problem"
+  : isBackbone
+    ? "/the-backbone"
+    : isProposal
+      ? "/proposal"
+      : `/${slug}`;
+
+// Golden-circle framing (implicit, not labeled)
+const phase = isProblem ? "why" : isBackbone ? "how" : isProposal ? "what" : "section";
+
+const eyebrow =
+  phase === "why"
+    ? "Context"
+    : phase === "how"
+      ? "Mechanism"
+      : phase === "what"
+        ? "Plan"
+        : "Section";
+
+const headlineKicker =
+  phase === "why"
+    ? "Start with what must change — and why it matters."
+    : phase === "how"
+      ? "See the durable core that makes coverage stable."
+      : phase === "what"
+        ? "Open the full plan as shareable sections."
+        : "A plain-language section designed to stand alone and be shared.";
+
+const subline =
+  phase === "why"
+    ? "This section frames the constraints and failure modes in clear terms — the “reason” before the architecture and the plan."
+    : phase === "how"
+      ? "This section explains the core architecture — the durable mechanism that stabilizes care and costs."
+      : phase === "what"
+        ? "This section contains the full “ACA for the People” plan — organized for citation, review, and reuse."
+        : "A structured, plain-language section designed to be readable on its own and shareable in parts.";
+
+// Next step (guided)
+const nextStep =
+  phase === "why"
+    ? { href: "/the-backbone", label: "Next: The Backbone", note: "The durable mechanism that stabilizes coverage" }
+    : phase === "how"
+      ? { href: "/proposal", label: "Next: The Proposal", note: "The complete plan as shareable sections" }
+      : phase === "what"
+        ? { href: "/congress", label: "For Congress", note: "Staff-ready framing and navigation" }
+        : { href: "/start-here", label: "Start Here", note: "Guided overview and map" };
+
+// Supporting nav (keep cross-map, but avoid duplicating primary)
+const related = [
+  { href: "/start-here", label: "Start Here", note: "Guided overview & map" },
+  { href: "/the-problem", label: "The Problem", note: "Constraints and why the status quo persists" },
+  { href: "/the-backbone", label: "The Backbone", note: "Durable core that stabilizes care" },
+  { href: "/proposal", label: "The Proposal", note: "Full plan as shareable sections" },
+  { href: "/congress", label: "For Congress", note: "Staff-ready structure & framing" },
+  { href: "/library", label: "Library", note: "All documents & references" },
+].filter((x) => x.href !== primaryHref);
+
+// Compact “core” tiles for the panel
+const coreTiles = [
+  { href: "/the-problem", top: "WHY", label: "The Problem", active: isProblem },
+  { href: "/the-backbone", top: "HOW", label: "The Backbone", active: isBackbone },
+  { href: "/proposal", top: "WHAT", label: "The Proposal", active: isProposal },
+];
+---
+
+<SiteLayout title={`${title} — Stand Up Arkansas`}>
+  <main class="sectionLanding">
+    <!-- Header -->
+    <header class="header" aria-label="Section overview">
+      <div class="headerInner">
+        <div class="headerLeft">
+          <p class="eyebrow">{eyebrow}</p>
+          <h1 class="h1">{title}</h1>
+          <p class="sub">{subline}</p>
+
+          <div class="ctas" aria-label="Primary actions">
+            <a class="btn primary" href="/start-here">Start Here</a>
+            <a class="btn" href={nextStep.href}>{nextStep.label}</a>
+            <a class="btn ghost" href="/congress">For Congress</a>
+          </div>
+
+          <div class="meta" aria-label="Reading cues">
+            <span class="metaPill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              Plain-language, shareable section
+            </span>
+            <span class="metaPill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              {headlineKicker}
+            </span>
+            <span class="metaPill">
+              <span class="dot warn" aria-hidden="true"></span>
+              Working build
+            </span>
+          </div>
+        </div>
+
+        <aside class="headerRight" aria-label="Map navigation">
+          <div class="panel">
+            <h2 class="panelTitle">Stay oriented</h2>
+            <p class="panelDesc">
+              Use the core map to move in sequence without losing the logic.
+            </p>
+
+            <div class="panelGrid" role="list" aria-label="Core map">
+              {coreTiles.map((t) => (
+                <a class="mini" href={t.href} data-active={t.active ? "true" : "false"} role="listitem">
+                  <span class="miniTop">{t.top}</span>
+                  <span class="miniMain">{t.label}</span>
+                </a>
+              ))}
+            </div>
+
+            <div class="panelFoot">
+              <span class="pill">
+                <span class="dot warn" aria-hidden="true"></span>
+                {nextStep.note}
+              </span>
+              <a class="btn" href="/library">Library →</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <!-- Body -->
+    {Content ? (
+      <section class="body" aria-label="Section content">
+        <div class="docCard">
+          <article class="prose">
+            <Content />
+          </article>
+
+          <div class="docFoot" aria-label="Continue">
+            <div class="docFootLeft">
+              <span class="docFootLabel">Continue</span>
+              <span class="docFootNote">{nextStep.note}</span>
+            </div>
+            <div class="docFootRight">
+              <a class="btn primary" href={nextStep.href}>{nextStep.label}</a>
+              <a class="btn" href="/start-here">Overview</a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rail" aria-label="Guided navigation">
+          <div class="railCard">
+            <h2 class="railTitle">Next steps</h2>
+            <p class="railDesc">
+              Keep the sequence intact, then branch into details.
+            </p>
+
+            <div class="railNext">
+              <a class="railNextLink" href={nextStep.href}>
+                <span class="railNextLabel">{nextStep.label}</span>
+                <span class="railNextNote">{nextStep.note}</span>
+              </a>
+            </div>
+
+            <div class="railLinks" aria-label="Explore other routes">
+              {related.slice(0, 5).map((item) => (
+                <a class="railLink" href={item.href}>
+                  <span class="railLinkLabel">{item.label}</span>
+                  <span class="railLinkNote">{item.note}</span>
+                </a>
+              ))}
+            </div>
+
+            <div class="railCtas">
+              <a class="btn" href="/congress">For Congress</a>
+              <a class="btn" href="/library">Browse Library</a>
+            </div>
+          </div>
+        </aside>
+      </section>
+    ) : (
+      <section class="body" aria-label="Section shell">
+        <div class="docCard">
+          <article class="prose">
+            <h1>{title}</h1>
+            <p style="margin-top: 10px;">
+              This section is being re-ingested from the authoritative DOCX sources.
+              The structure is in place so the logic stays consistent as content lands.
+            </p>
+
+            <blockquote>
+              If you’re moving through this in sequence, continue to the next step below — then return later for the full text.
+            </blockquote>
+
+            <p style="display:flex; gap: 10px; flex-wrap:wrap; margin-top: 14px;">
+              <a class="btn primary" href={nextStep.href}>{nextStep.label}</a>
+              <a class="btn" href="/start-here">Start Here</a>
+              <a class="btn ghost" href="/library">Open Library</a>
+            </p>
+          </article>
+
+          <div class="docFoot" aria-label="Continue">
+            <div class="docFootLeft">
+              <span class="docFootLabel">Up next</span>
+              <span class="docFootNote">{nextStep.note}</span>
+            </div>
+            <div class="docFootRight">
+              <a class="btn primary" href={nextStep.href}>{nextStep.label}</a>
+            </div>
+          </div>
+        </div>
+
+        <aside class="rail" aria-label="Guided navigation">
+          <div class="railCard">
+            <h2 class="railTitle">Keep moving</h2>
+            <p class="railDesc">
+              Use these routes while this section is being re-ingested.
+            </p>
+
+            <div class="railNext">
+              <a class="railNextLink" href={nextStep.href}>
+                <span class="railNextLabel">{nextStep.label}</span>
+                <span class="railNextNote">{nextStep.note}</span>
+              </a>
+            </div>
+
+            <div class="railLinks">
+              {related.slice(0, 5).map((item) => (
+                <a class="railLink" href={item.href}>
+                  <span class="railLinkLabel">{item.label}</span>
+                  <span class="railLinkNote">{item.note}</span>
+                </a>
+              ))}
+            </div>
+
+            <div class="railCtas">
+              <a class="btn" href="/congress">For Congress</a>
+              <a class="btn" href="/library">Browse Library</a>
+            </div>
+          </div>
+        </aside>
+      </section>
+    )}
+  </main>
+
+  <style>
+    .sectionLanding{
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+      padding: 6px 0 18px;
+    }
+
+    /* Header (theme-token safe) */
+    .header{
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(1200px 420px at 20% 0%, rgba(var(--brand), .14), transparent 60%),
+        radial-gradient(900px 460px at 90% 20%, rgba(var(--brand2), .09), transparent 55%),
+        var(--surface);
+      box-shadow: var(--shadow-sm);
+      overflow:hidden;
+    }
+
+    .headerInner{
+      display:grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 16px;
+      align-items:start;
+    }
+
+    .eyebrow{
+      margin:0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .h1{
+      margin:0;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.07;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .sub{
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 78ch;
+    }
+
+    .ctas{
+      margin-top: 14px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    :global(.btn.ghost){
+      background: transparent;
+      border: 1px solid var(--stroke-strong);
+    }
+    :global(.btn.ghost:hover){
+      border-color: rgba(var(--ring), .55);
+      transform: translateY(-1px);
+      background: var(--hover);
+    }
+
+    .meta{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+    }
+    .metaPill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+    .dot.neutral{
+      background: rgba(var(--fg), .65);
+      box-shadow: 0 0 0 3px rgba(var(--fg), .10);
+    }
+    .dot.warn{
+      background: rgba(var(--warn), .95);
+      box-shadow: 0 0 0 6px rgba(var(--warn), .12);
+    }
+
+    /* Panel */
+    .panel{
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panelTitle{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .panelDesc{
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .panelGrid{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mini{
+      text-decoration:none;
+      color: inherit;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+      display:grid;
+      gap: 4px;
+    }
+
+    .mini:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .mini[data-active="true"]{
+      border-color: rgba(var(--ring), .55);
+      background: linear-gradient(135deg, rgba(var(--brand), .18), rgba(var(--brand2), .08));
+    }
+
+    .miniTop{
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .miniMain{
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panelFoot{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Body */
+    .body{
+      display:grid;
+      grid-template-columns: 1fr 340px;
+      gap: 16px;
+      align-items:start;
+    }
+
+    .docCard{
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .docFoot{
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+
+    .docFootLeft{
+      display:grid;
+      gap: 4px;
+      max-width: 60ch;
+    }
+
+    .docFootLabel{
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .docFootNote{
+      font-size: 13px;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+
+    .docFootRight{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    /* Right rail */
+    .railCard{
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 96px;
+    }
+
+    .railTitle{
+      margin:0;
+      font-size: 15px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .railDesc{
+      margin: 6px 0 0;
+      font-size: 13px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .railNext{
+      margin-top: 12px;
+    }
+
+    .railNextLink{
+      text-decoration:none;
+      color: inherit;
+      border-radius: 16px;
+      border: 1px solid rgba(var(--ring), .40);
+      background: linear-gradient(135deg, rgba(var(--brand), .16), rgba(var(--brand2), .08));
+      padding: 12px;
+      display:grid;
+      gap: 4px;
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+    }
+
+    .railNextLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .60);
+      background: linear-gradient(135deg, rgba(var(--brand), .20), rgba(var(--brand2), .10));
+    }
+
+    .railNextLabel{
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .railNextNote{
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--text-muted);
+    }
+
+    .railLinks{
+      margin-top: 12px;
+      display:grid;
+      gap: 8px;
+    }
+
+    .railLink{
+      text-decoration:none;
+      color: inherit;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      padding: 10px;
+      display:grid;
+      gap: 2px;
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+    }
+
+    .railLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .railLinkLabel{
+      font-size: 13px;
+      font-weight: 750;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .railLinkNote{
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .railCtas{
+      margin-top: 14px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 980px){
+      .headerInner{ grid-template-columns: 1fr; }
+      .body{ grid-template-columns: 1fr; }
+      .railCard{ position: static; top: auto; }
+      .panelGrid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</SiteLayout>

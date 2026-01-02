@@ -1,0 +1,26 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const docs = await getCollection("docs_migrated");
+
+// Map route -> entry. Your MDX frontmatter provides `route` already.
+const byRoute = new Map(docs.map((d) => [d.data.route || "/" + d.slug, d]));
+
+const routePath = "/" + (Astro.params.slug ? Astro.params.slug.join("/") : "");
+const entry = byRoute.get(routePath);
+
+if (!entry) {
+  // Unknown route: send to Library rather than 404 for now.
+  return Astro.redirect("/library");
+}
+
+const { Content } = await entry.render();
+const title = entry.data.title ?? entry.slug;
+---
+
+<SiteLayout title={`${title} — Stand Up Arkansas`}>
+  <article class="prose">
+    <Content />
+  </article>
+</SiteLayout>

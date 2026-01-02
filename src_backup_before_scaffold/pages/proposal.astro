@@ -1,0 +1,21 @@
+---
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const section = "proposal";
+const docs = (await getCollection("docs_migrated"))
+  .filter((d) => (d.data.route || "").startsWith("/" + section))
+  .sort((a, b) => (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug));
+---
+
+<SiteLayout title="Proposal — Stand Up Arkansas">
+  <div class="prose">
+    <h1>Proposal</h1>
+    <p>Documents in this section.</p>
+    <ul>
+      {docs.map((d) => (
+        <li><a href={d.data.route || "/" + d.slug}>{d.data.title ?? d.slug}</a></li>
+      ))}
+    </ul>
+  </div>
+</SiteLayout>

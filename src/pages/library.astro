@@ -1,0 +1,549 @@
+---
+export const prerender = false;
+
+import SiteLayout from "../layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
+
+const docs = (await getCollection("docs"))
+  .slice()
+  .sort((a, b) => (a.data.title ?? a.slug).localeCompare(b.data.title ?? b.slug));
+
+const count = docs.length;
+
+function routeFor(d: any) {
+  return d.data?.route || "/" + d.slug;
+}
+
+function labelFor(d: any) {
+  return d.data?.title ?? d.slug;
+}
+
+function subtitleFor(d: any) {
+  // Optional fields if you add them later. Safe fallbacks.
+  const s = d.data?.description || d.data?.summary || d.data?.kicker || "";
+  return typeof s === "string" ? s : "";
+}
+---
+
+<SiteLayout title="Library — Stand Up Arkansas">
+  <main class="library">
+    <!-- Header -->
+    <header class="header" aria-label="Library index">
+      <div class="headerInner">
+        <div class="headerLeft">
+          <p class="eyebrow">Library</p>
+          <h1 class="h1">Index of pages</h1>
+          <p class="sub">
+            Use this as the <strong>supporting index</strong>: find a specific section, cite it, and share it.
+            For orientation, start with the guided overview first.
+          </p>
+
+          <div class="ctas" aria-label="Primary actions">
+            <a class="btn primary" href="/start-here">Guided Overview</a>
+            <a class="btn" href="/the-backbone">Backbone</a>
+            <a class="btn ghost" href="/proposal">Open Proposal</a>
+          </div>
+
+          <div class="meta" aria-label="Library status">
+            <div class="meta-pill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>{count} item{count === 1 ? "" : "s"} available</span>
+            </div>
+            <div class="meta-pill">
+              <span class="dot draft" aria-hidden="true"></span>
+              <span>Re-ingesting sources</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="headerRight" aria-label="Quick routes">
+          <div class="panel">
+            <h2 class="panelTitle">Core routes</h2>
+
+            <div class="panelGrid">
+              <a class="mini" href="/the-problem">
+                <span class="miniTop">Context</span>
+                <span class="miniMain">The Problem</span>
+              </a>
+              <a class="mini" href="/the-backbone">
+                <span class="miniTop">Mechanism</span>
+                <span class="miniMain">The Backbone</span>
+              </a>
+              <a class="mini" href="/proposal">
+                <span class="miniTop">Deliverable</span>
+                <span class="miniMain">The Proposal</span>
+              </a>
+            </div>
+
+            <div class="panelFoot">
+              <span class="pill">
+                <span class="dot draft" aria-hidden="true"></span>
+                Working build
+              </span>
+              <a class="btn" href="/start-here">Overview →</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="headerGlow" aria-hidden="true"></div>
+    </header>
+
+    <!-- Content -->
+    {docs.length === 0 ? (
+      <section class="empty" aria-label="No documents yet">
+        <div class="emptyCard">
+          <h2 class="emptyTitle">No documents yet</h2>
+          <p class="emptyDesc">
+            We’re re-ingesting the authoritative DOCX sources into a fresh collection.
+            This page will become the master index as content lands.
+          </p>
+
+          <div class="emptyCtas">
+            <a class="btn primary" href="/start-here">Guided Overview</a>
+            <a class="btn" href="/the-backbone">Backbone</a>
+            <a class="btn ghost" href="/proposal">Open Proposal</a>
+          </div>
+
+          <div class="emptyHint">
+            <strong>Tip:</strong> Start with <a href="/start-here">Start Here</a> to get the map — then return to the Library
+            to cite/share individual sections.
+          </div>
+        </div>
+      </section>
+    ) : (
+      <section class="results" aria-label="Library documents">
+        <div class="resultsHead">
+          <div class="resultsLeft">
+            <h2 class="sectionTitle">Browse</h2>
+            <p class="sectionKicker">
+              Cards below link to each document route. Filters/search can be added after ingestion.
+            </p>
+          </div>
+
+          <div class="resultsRight" aria-label="Placeholder controls">
+            <a class="chip" href="#all">All</a>
+            <a class="chip" href="#core">Core</a>
+            <a class="chip" href="#appendix">Appendix</a>
+            <span class="chip muted" aria-hidden="true">Search (soon)</span>
+          </div>
+        </div>
+
+        <div id="all" class="grid" role="list">
+          {docs.map((d) => {
+            const href = routeFor(d);
+            const label = labelFor(d);
+            const sub = subtitleFor(d);
+
+            return (
+              <a class="docCard" href={href} role="listitem">
+                <div class="docTop">
+                  <p class="docEyebrow">Document</p>
+                  <h3 class="docTitle">{label}</h3>
+                  {sub ? (
+                    <p class="docDesc">{sub}</p>
+                  ) : (
+                    <p class="docDesc placeholder">Plain-language section • shareable page</p>
+                  )}
+                </div>
+
+                <div class="docFoot">
+                  <span class="docPath" title={href}>{href}</span>
+                  <span class="arrow">Open</span>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )}
+  </main>
+
+  <style>
+    .library{
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+      padding: 6px 0 18px;
+    }
+
+    /* Header (token-safe) */
+    .header{
+      position: relative;
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(1200px 420px at 20% 0%, rgba(var(--brand), .14), transparent 60%),
+        radial-gradient(900px 460px at 90% 20%, rgba(var(--brand2), .10), transparent 55%),
+        var(--surface);
+      overflow:hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .headerGlow{
+      position:absolute;
+      inset:auto -10% -60% -10%;
+      height: 260px;
+      background:
+        radial-gradient(closest-side, rgba(var(--brand), .20), transparent 70%),
+        radial-gradient(closest-side, rgba(var(--brand2), .12), transparent 70%);
+      filter: blur(12px);
+      opacity: .75;
+      pointer-events:none;
+    }
+
+    .headerInner{
+      position: relative;
+      display:grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 16px;
+      align-items:start;
+      z-index: 1;
+    }
+
+    .eyebrow{
+      margin:0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .h1{
+      margin:0;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.07;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .sub{
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 78ch;
+    }
+
+    .ctas{
+      margin-top: 14px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    :global(.btn.ghost){
+      background: transparent;
+      border: 1px solid var(--stroke-strong);
+    }
+    :global(.btn.ghost:hover){
+      border-color: rgba(var(--ring), .55);
+      transform: translateY(-1px);
+      background: var(--hover);
+    }
+
+    .meta{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+    }
+
+    .meta-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+    .dot.neutral{
+      background: rgba(var(--fg), .65);
+      box-shadow: 0 0 0 3px rgba(var(--fg), .10);
+    }
+    .dot.draft{
+      background: rgba(var(--warn), .95);
+      box-shadow: 0 0 0 6px rgba(var(--warn), .12);
+    }
+
+    /* Panel */
+    .panel{
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panelTitle{
+      margin:0 0 10px;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panelGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mini{
+      text-decoration:none;
+      color: inherit;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+      display:grid;
+      gap: 4px;
+    }
+
+    .mini:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .miniTop{
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .miniMain{
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panelFoot{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Empty state */
+    .emptyCard{
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      padding: 18px;
+    }
+
+    .emptyTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .emptyDesc{
+      margin: 8px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 80ch;
+    }
+
+    .emptyCtas{
+      margin-top: 14px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    .emptyHint{
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--stroke);
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .emptyHint a{
+      color: rgba(var(--ring), .95);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(var(--ring), .45);
+    }
+
+    /* Results */
+    .resultsHead{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+      padding: 0 2px;
+    }
+
+    .sectionTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .sectionKicker{
+      margin: 6px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 84ch;
+    }
+
+    .resultsRight{
+      display:flex;
+      gap: 8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      text-decoration:none;
+      color: var(--text);
+      font-size: 13px;
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+      white-space: nowrap;
+    }
+
+    .chip:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .chip.muted{
+      opacity: 0.7;
+      border-style: dashed;
+      color: var(--text-muted);
+    }
+
+    .grid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .docCard{
+      display:grid;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      text-decoration:none;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .docCard:hover{
+      transform: translateY(-2px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .docEyebrow{
+      margin: 0 0 6px;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .docTitle{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .docDesc{
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .docDesc.placeholder{
+      opacity: 0.88;
+    }
+
+    .docFoot{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      padding-top: 2px;
+      color: var(--text);
+    }
+
+    .docPath{
+      font-size: 12px;
+      color: var(--text-subtle);
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 62%;
+    }
+
+    .arrow{
+      font-weight: 800;
+    }
+
+    .arrow::after{
+      content: " →";
+      opacity: 0.9;
+    }
+
+    @media (max-width: 980px){
+      .headerInner{ grid-template-columns: 1fr; }
+      .panelGrid{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</SiteLayout>

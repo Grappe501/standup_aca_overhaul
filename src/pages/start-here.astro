@@ -1,0 +1,656 @@
+---
+export const prerender = false;
+
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout title="Start Here — Stand Up Arkansas">
+  <main class="start">
+    <!-- Header -->
+    <header class="header" aria-label="Guided overview">
+      <div class="headerInner">
+        <div class="headerLeft">
+          <p class="eyebrow">Start Here</p>
+
+          <!-- WHY (implicit): lead with purpose -->
+          <h1 class="h1">A short guided overview</h1>
+          <p class="sub">
+            This is the fastest way to understand what must improve, how stability is created, and what the plan delivers.
+            Read this first, then jump into any section without getting lost. (We’ll populate this page from DOCX next.)
+          </p>
+
+          <div class="ctas" aria-label="Primary actions">
+            <a class="btn primary" href="/the-problem">Start with The Problem</a>
+            <a class="btn" href="/the-backbone">Then The Backbone</a>
+            <a class="btn ghost" href="/proposal">Open the Proposal</a>
+          </div>
+
+          <div class="meta" aria-label="Design signals">
+            <div class="meta-pill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>Plain-language first</span>
+            </div>
+            <div class="meta-pill">
+              <span class="dot neutral" aria-hidden="true"></span>
+              <span>Structured flow</span>
+            </div>
+            <div class="meta-pill">
+              <span class="dot draft" aria-hidden="true"></span>
+              <span>Working draft</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="headerRight" aria-label="Quick orientation">
+          <div class="panel">
+            <h2 class="panelTitle">Quick orientation</h2>
+
+            <div class="panelGrid" role="list" aria-label="Core map">
+              <a class="mini" href="/the-problem" role="listitem">
+                <span class="miniTop">WHY</span>
+                <span class="miniMain">The Problem</span>
+              </a>
+              <a class="mini" href="/the-backbone" role="listitem">
+                <span class="miniTop">HOW</span>
+                <span class="miniMain">The Backbone</span>
+              </a>
+              <a class="mini" href="/proposal" role="listitem">
+                <span class="miniTop">WHAT</span>
+                <span class="miniMain">The Proposal</span>
+              </a>
+            </div>
+
+            <ol class="steps" aria-label="Reading steps">
+              <li>
+                <strong>Start with the reason</strong>
+                <span>Why change is necessary and what must improve.</span>
+              </li>
+              <li>
+                <strong>See the mechanism</strong>
+                <span>The Backbone: stability and predictability by design.</span>
+              </li>
+              <li>
+                <strong>Open the plan</strong>
+                <span>The full proposal, organized as shareable pages.</span>
+              </li>
+            </ol>
+
+            <div class="panelFoot">
+              <span class="pill">
+                <span class="dot draft" aria-hidden="true"></span>
+                Guided overview shell
+              </span>
+              <a class="btn" href="/library">Library →</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="headerGlow" aria-hidden="true"></div>
+    </header>
+
+    <!-- Flow -->
+    <section class="flow" aria-label="Recommended sequence">
+      <div class="sectionHead">
+        <h2 class="sectionTitle">Read in this order</h2>
+        <p class="sectionKicker">
+          A simple sequence that preserves the logic. Each step links to a core page.
+        </p>
+      </div>
+
+      <div class="flowGrid">
+        <a class="stepCard" href="/the-problem">
+          <p class="stepTop">First</p>
+          <h3 class="stepMain">The Problem</h3>
+          <p class="stepSub">
+            The lived reality: what’s broken, what people experience, and why it persists.
+          </p>
+          <div class="stepFoot"><span class="arrow">Open</span></div>
+        </a>
+
+        <a class="stepCard" href="/the-backbone">
+          <p class="stepTop">Next</p>
+          <h3 class="stepMain">The Backbone</h3>
+          <p class="stepSub">
+            The durable core that creates stability—so costs and coverage become predictable.
+          </p>
+          <div class="stepFoot"><span class="arrow">Open</span></div>
+        </a>
+
+        <a class="stepCard" href="/proposal">
+          <p class="stepTop">Then</p>
+          <h3 class="stepMain">The Proposal</h3>
+          <p class="stepSub">
+            The full “ACA for the People” plan—organized as shareable, section-by-section pages.
+          </p>
+          <div class="stepFoot"><span class="arrow">Open</span></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Paths -->
+    <section class="paths" aria-label="Audience pathways">
+      <div class="sectionHead">
+        <h2 class="sectionTitle">Choose your path</h2>
+        <p class="sectionKicker">
+          A quick route depending on what you need right now.
+        </p>
+      </div>
+
+      <div class="pathsGrid">
+        <div class="pathCard">
+          <h3 class="pathTitle">For voters & advocates</h3>
+          <p class="pathDesc">
+            Follow the sequence above, then use the Library to find and share specific sections.
+          </p>
+          <div class="pathLinks">
+            <a class="pathLink" href="/the-problem">The Problem</a>
+            <a class="pathLink" href="/the-backbone">The Backbone</a>
+            <a class="pathLink" href="/proposal">The Proposal</a>
+          </div>
+        </div>
+
+        <div class="pathCard">
+          <h3 class="pathTitle">For policy staff & Congress</h3>
+          <p class="pathDesc">
+            Use the Congress view for review structure, then move through the Proposal by section.
+          </p>
+          <div class="pathLinks">
+            <a class="pathLink" href="/congress">For Congress</a>
+            <a class="pathLink" href="/proposal">Proposal</a>
+            <a class="pathLink" href="/the-backbone">The Backbone</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Share / Cite band -->
+    <section class="share" aria-label="Share and cite">
+      <div class="shareInner">
+        <div class="shareCopy">
+          <h2 class="shareTitle">Built to be shared</h2>
+          <p class="shareDesc">
+            Each section is designed to stand alone—so you can link one page without sending someone a whole binder.
+            (We can add citation/print helpers later.)
+          </p>
+        </div>
+        <div class="shareCta">
+          <a class="btn primary" href="/proposal">Open Proposal</a>
+          <a class="btn" href="/library">Open Library</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final -->
+    <section class="final" aria-label="Next step">
+      <div class="finalInner">
+        <div class="finalCopy">
+          <h2 class="finalTitle">Ready to move forward?</h2>
+          <p class="finalDesc">
+            Keep the sequence: context first, the durable mechanism next, then the full plan.
+          </p>
+        </div>
+        <div class="finalCta">
+          <a class="btn primary" href="/the-problem">Open The Problem</a>
+          <a class="btn" href="/the-backbone">Open The Backbone</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .start{
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+      padding: 6px 0 18px;
+    }
+
+    /* Header (token-safe) */
+    .header{
+      position: relative;
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--stroke);
+      background:
+        radial-gradient(1200px 420px at 20% 0%, rgba(var(--brand), .14), transparent 60%),
+        radial-gradient(900px 460px at 90% 20%, rgba(var(--brand2), .10), transparent 55%),
+        var(--surface);
+      overflow:hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .headerGlow{
+      position:absolute;
+      inset:auto -10% -60% -10%;
+      height: 260px;
+      background:
+        radial-gradient(closest-side, rgba(var(--brand), .20), transparent 70%),
+        radial-gradient(closest-side, rgba(var(--brand2), .12), transparent 70%);
+      filter: blur(12px);
+      opacity: .75;
+      pointer-events:none;
+    }
+
+    .headerInner{
+      position: relative;
+      display:grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 16px;
+      align-items:start;
+      z-index: 1;
+    }
+
+    .eyebrow{
+      margin:0 0 8px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .h1{
+      margin:0;
+      font-size: clamp(30px, 3.2vw, 44px);
+      line-height: 1.07;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .sub{
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      max-width: 78ch;
+    }
+
+    .ctas{
+      margin-top: 14px;
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    :global(.btn.ghost){
+      background: transparent;
+      border: 1px solid var(--stroke-strong);
+    }
+    :global(.btn.ghost:hover){
+      border-color: rgba(var(--ring), .55);
+      transform: translateY(-1px);
+      background: var(--hover);
+    }
+
+    .meta{
+      margin-top: 12px;
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+    }
+
+    .meta-pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      font-size: 13px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+    }
+    .dot.neutral{
+      background: rgba(var(--fg), .65);
+      box-shadow: 0 0 0 3px rgba(var(--fg), .10);
+    }
+    .dot.draft{
+      background: rgba(var(--warn), .95);
+      box-shadow: 0 0 0 6px rgba(var(--warn), .12);
+    }
+
+    /* Panel */
+    .panel{
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--stroke);
+      background: var(--surface2);
+      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panelTitle{
+      margin:0;
+      font-size: 14px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .panelGrid{
+      margin: 10px 0 12px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mini{
+      text-decoration:none;
+      color: inherit;
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      transition: transform .14s ease, border-color .14s ease, background .14s ease;
+      display:grid;
+      gap: 4px;
+    }
+
+    .mini:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .miniTop{
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .miniMain{
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .steps{
+      margin: 0;
+      padding-left: 18px;
+      display:grid;
+      gap: 10px;
+      color: var(--text-muted);
+    }
+
+    .steps li strong{
+      display:block;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .steps li span{
+      display:block;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    .panelFoot{
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--stroke);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap:wrap;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    /* Sections */
+    .sectionHead{
+      display:grid;
+      gap: 6px;
+      padding: 0 2px;
+    }
+
+    .sectionTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .sectionKicker{
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      max-width: 84ch;
+    }
+
+    .flowGrid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stepCard{
+      display:grid;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      text-decoration:none;
+      color: inherit;
+      box-shadow: var(--shadow-sm);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .stepCard:hover{
+      transform: translateY(-2px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .stepTop{
+      margin:0;
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+    }
+
+    .stepMain{
+      margin:0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      font-weight: 850;
+      color: var(--text);
+    }
+
+    .stepSub{
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+    }
+
+    .stepFoot{
+      display:flex;
+      justify-content:flex-end;
+      align-items:center;
+      padding-top: 2px;
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .arrow::after{
+      content: " →";
+      opacity: 0.9;
+    }
+
+    /* Paths */
+    .pathsGrid{
+      margin-top: 14px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .pathCard{
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+      display:grid;
+      gap: 10px;
+    }
+
+    .pathTitle{
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .pathDesc{
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 70ch;
+    }
+
+    .pathLinks{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .pathLink{
+      display:inline-flex;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      text-decoration:none;
+      color: var(--text);
+      font-size: 13px;
+      background: var(--surface2);
+      transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+    }
+
+    .pathLink:hover{
+      transform: translateY(-1px);
+      border-color: rgba(var(--ring), .55);
+      background: var(--hover);
+    }
+
+    .pathLink::after{
+      content: " →";
+      opacity: 0.85;
+    }
+
+    /* Share band */
+    .share{
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .shareInner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+
+    .shareTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .shareDesc{
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 78ch;
+    }
+
+    .shareCta{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    /* Final */
+    .final{
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid var(--stroke);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .finalInner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+
+    .finalTitle{
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .finalDesc{
+      margin: 6px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-muted);
+      max-width: 70ch;
+    }
+
+    .finalCta{
+      display:flex;
+      gap: 10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    @media (max-width: 980px){
+      .headerInner{ grid-template-columns: 1fr; }
+      .flowGrid{ grid-template-columns: 1fr; }
+      .pathsGrid{ grid-template-columns: 1fr; }
+      .panelGrid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</SiteLayout>
